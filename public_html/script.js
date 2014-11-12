@@ -393,6 +393,8 @@ function normalizeTrack(track, valid){
 
 // Refeshes the larger table of all the planes
 function refreshTableInfo() {
+	$('#dataTable').empty();
+
 	var html = '';
 	for (var tablep in Planes) {
 		var tableplane = Planes[tablep]
@@ -416,10 +418,10 @@ function refreshTableInfo() {
 			}
 			
 			if (tableplane.vPosition == true) {
-				html += '<tr onclick="planeTRclick(\''+tableplane.icao+'\')" class="plane_table_row vPosition' + specialStyle + '">';
+				html = '<tr onclick="planeTRclick(\''+tableplane.icao+'\')" class="plane_table_row vPosition' + specialStyle + '">';
 			} else {
-				html += '<tr onclick="planeTRclick(\''+tableplane.icao+'\')" class="plane_table_row ' + specialStyle + '">';
-		    }
+				html = '<tr onclick="planeTRclick(\''+tableplane.icao+'\')" class="plane_table_row ' + specialStyle + '">';
+			}
 		    
 			html += '<td>' + tableplane.icao + '</td>';
 			html += '<td>' + tableplane.flight + '</td>';
@@ -448,10 +450,11 @@ function refreshTableInfo() {
 			html += '<td align="right">' + tableplane.messages + '</td>';
 			html += '<td align="right">' + tableplane.seen + '</td>';
 			html += '</tr>';
+
+			$('#dataTable').append(html);
 		}
 	}
 
-	document.getElementById('dataTable').innerHTML = html;
 
 	if (SpecialSquawk) {
     	$('#SpecialSquawkWarning').css('display', 'inline');
