@@ -12,6 +12,10 @@ var bSortASC=true;
 var bDefaultSortASC=true;
 var iDefaultSortCol=3;
 
+var varTimerInterval = 0;
+var hidden = "hidden";
+var connection_error = 0;
+
 // Get current map settings
 CenterLat = Number(localStorage['CenterLat']) || CONST_CENTERLAT;
 CenterLon = Number(localStorage['CenterLon']) || CONST_CENTERLON;
@@ -19,6 +23,8 @@ ZoomLvl   = Number(localStorage['ZoomLvl']) || CONST_ZOOMLVL;
 
 function fetchData() {
 	$.getJSON('/dump1090/data.json', function(data) {
+		connection_error = 0;
+		console.log("data sent");
 		PlanesOnMap = 0
 		SpecialSquawk = false;
 		
@@ -50,6 +56,14 @@ function fetchData() {
 		}
 
 		PlanesOnTable = data.length;
+
+	}).error(function(data) {
+		// network problems
+		//console.log("detected error");
+	if (connection_error == 1) {
+		reapAll(); // delete all planes the second time we get this
+	}
+		connection_error = 1;
 	});
 }
 
@@ -196,6 +210,26 @@ function initialize() {
         $('#dialog-modal').css('display', 'inline'); // Show hidden settings-windows content
     });
 
+		// detect visibilitychange: works only for  When the user minimizes the webpage or moves to another tab
+	hidden = "hidden";
+	// Standards:
+	if (hidden in document)
+		document.addEventListener("visibilitychange", onchange);
+	else if ((hidden = "mozHidden") in document)
+		document.addEventListener("mozvisibilitychange", onchange);
+	else if ((hidden = "webkitHidden") in document)
+		document.addEventListener("webkitvisibilitychange", onchange);
+	else if ((hidden = "msHidden") in document)
+		document.addEventListener("msvisibilitychange", onchange);
+	else if ((hidden = "oHidden") in document)
+		document.addEventListener("ovisibilitychange", onchange);
+		// IE 9 and lower:
+	else if ("onfocusin" in document)
+		document.onfocusin = document.onfocusout = onchange;
+	// All others:
+	else
+		window.onpageshow = window.onpagehide = window.onfocus = window.onblur = onchange;
+	
 	// Load up our options page
 	optionsInitalize();
 
@@ -203,14 +237,62 @@ function initialize() {
 	extendedInitalize();
 	
 	// Setup our timer to poll from the server.
-	window.setInterval(function() {
+	varTimerInterval = window.setInterval(renew, 1000);
+}
+
+
+
+function renew(){
+	// if browser offline reap all planes:
+	if (!navigator.onLine || connection_error == 1) {  // creating XMLHttpRequests might be better
+		reapAll();
+		//console.log("detected offline");
+	} else {
 		fetchData();
 		refreshTableInfo();
 		refreshSelected();
 		reaper();
 		extendedPulse();
-	}, 1000);
+	}
 }
+
+function reapAll(){
+	//console.log("reapping");
+	for (var reap in Planes) {
+		Planes[reap].reapable = true;
+	}
+}
+	
+function onchange (evt) {
+// just for you IE
+	evt = (evt || window.event);
+	var type = evt.type;
+	hide_events = {focusout:1, pagehide:2, blur:3};
+	show_events = {focusin:1, focus:2, pageshow:3};
+
+	if (type in hide_events) {
+		// clear time interval; do not fetch data anymore
+		clearInterval(varTimerInterval);
+		varTimerInterval = 0 ;
+	} else if (type in show_events) {
+		 reapAll();
+		//reset timer
+		if (!varTimerInterval)
+		varTimerInterval = window.setInterval(renew, 1000);
+	} else {
+		//  check visibility state accorting to Page Visibility API
+		if(document.hidden) {
+			clearInterval(varTimerInterval);
+			varTimerInterval = 0 ;
+		} else {
+			reapAll();
+			//reset timer
+			if (!varTimerInterval)
+			varTimerInterval = window.setInterval(renew, 1000);
+		}
+	}
+}
+
 
 // This looks for planes to reap out of the master Planes variable
 function reaper() {
