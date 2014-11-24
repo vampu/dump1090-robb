@@ -24,7 +24,6 @@ ZoomLvl   = Number(localStorage['ZoomLvl']) || CONST_ZOOMLVL;
 function fetchData() {
 	$.getJSON('/dump1090/data.json', function(data) {
 		connection_error = 0;
-		console.log("data sent");
 		PlanesOnMap = 0
 		SpecialSquawk = false;
 		
@@ -59,7 +58,6 @@ function fetchData() {
 
 	}).error(function(data) {
 		// network problems
-		//console.log("detected error");
 		connection_error = 1;
 	});
 }
@@ -243,7 +241,6 @@ function renew(){
 	// if browser offline reap all planes:
 	if (!navigator.onLine || connection_error == 1) {
 		reapeableAll();
-		//console.log("detected offline");
 	} else {
 		fetchData();
 		refreshTableInfo();
@@ -254,7 +251,6 @@ function renew(){
 }
 
 function reapeableAll(){
-	//console.log("reapping");
 	for (var reap in Planes) {
 		//if not yet removed from the map, do it now!
 				if (Planes[reap].marker) {
@@ -266,8 +262,7 @@ function reapeableAll(){
 }
 	
 function onchange (evt) {
-// just for you IE
-	evt = (evt || window.event);
+	evt = (evt || window.event); // just for you IE
 	var type = evt.type;
 	hide_events = {focusout:1, pagehide:2, blur:3};
 	show_events = {focusin:1, focus:2, pageshow:3};

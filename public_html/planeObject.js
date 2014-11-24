@@ -131,7 +131,6 @@ var planeObject = {
 
 	//remove plane from the map	
 	remove_plane: function() {
-
 			if (this.marker) {
 					this.marker.setMap(null);
 					this.marker = null;
