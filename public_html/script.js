@@ -235,8 +235,6 @@ function initialize() {
 	varTimerInterval = window.setInterval(renew, 1000);
 }
 
-
-
 function renew(){
 	// if browser offline reap all planes:
 	if (!navigator.onLine || connection_error == 1) {
@@ -289,7 +287,6 @@ function onchange (evt) {
 		}
 	}
 }
-
 
 // This looks for planes to reap out of the master Planes variable
 function reaper() {
