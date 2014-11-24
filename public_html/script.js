@@ -53,6 +53,10 @@ function fetchData() {
 			// Copy the plane into Planes
 			Planes[plane.icao] = plane;
 		}
+		//check on all planes
+		for (var plane in Planes) {
+			plane.check_plane();
+		}
 
 		PlanesOnTable = data.length;
 

@@ -130,21 +130,32 @@ var planeObject = {
 		},
 
 	//remove plane from the map	
-	remove_plane: function() {
+	remove_plane : function() {
 			if (this.marker) {
 					this.marker.setMap(null);
 					this.marker = null;
 				}
-				if (this.line) {
+			if (this.line) {
 					this.line.setMap(null);
 					this.line = null;
 				}
-				if (SelectedPlane == this.icao) {
-					if (this.is_selected) {
+			if (SelectedPlane == this.icao) {
+				if (this.is_selected) {
 						this.is_selected = false;
 					}
-					SelectedPlane = null;
+				SelectedPlane = null;
 				}
+		},
+
+	check_plane : function() {
+		if (this.seen > 58) {
+				this.reapable = true;
+				this.remove_plane();
+		} else {
+				if (this.reapable == true) {
+				}
+				this.reapable = false;
+			}
 		},
 
 	// Update our data
@@ -169,14 +180,7 @@ var planeObject = {
 
 			// If no packet in over 58 seconds, consider the plane reapable
 			// This way we can hold it, but not show it just in case the plane comes back
-			if (this.seen > 58) {
-				this.reapable = true;
-				remove_plane();
-			} else {
-				if (this.reapable == true) {
-				}
-				this.reapable = false;
-			}
+			this.check_plane();
 
 			// Is the position valid?
 			if ((data.validposition == 1) && (this.reapable == false)) {
