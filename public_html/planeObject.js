@@ -148,7 +148,9 @@ var planeObject = {
 		},
 
 	check_plane : function() {
-		if (this.seen > 58) {
+		// If no packet in over 58 seconds, consider the plane reapable
+		// This way we can hold it, but not show it just in case the plane comes back
+		if (this.seen && this.seen > 58) {
 				this.reapable = true;
 				this.remove_plane();
 		} else {
@@ -177,10 +179,6 @@ var planeObject = {
 			this.icao	= data.hex;
 			this.messages	= data.messages;
 			this.seen	= data.seen;
-
-			// If no packet in over 58 seconds, consider the plane reapable
-			// This way we can hold it, but not show it just in case the plane comes back
-			this.check_plane();
 
 			// Is the position valid?
 			if ((data.validposition == 1) && (this.reapable == false)) {
