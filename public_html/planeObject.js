@@ -150,11 +150,11 @@ var planeObject = {
 	check_plane : function() {
 		// If no packet in over 58 seconds, consider the plane reapable
 		// This way we can hold it, but not show it just in case the plane comes back
-		console.log("Checking plane");
+		//console.log("Checking plane");
 		if (this.seen > 58) {
 				this.reapable = true;
 				this.remove_plane();
-				console.log("Removing plane");
+				//console.log("Removing plane");
 		} else {
 				if (this.reapable == true) {
 				}
