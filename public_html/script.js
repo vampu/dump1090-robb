@@ -60,9 +60,6 @@ function fetchData() {
 	}).error(function(data) {
 		// network problems
 		//console.log("detected error");
-	if (connection_error == 1) {
-		reapAll(); // delete all planes the second time we get this
-	}
 		connection_error = 1;
 	});
 }
@@ -244,8 +241,8 @@ function initialize() {
 
 function renew(){
 	// if browser offline reap all planes:
-	if (!navigator.onLine || connection_error == 1) {  // creating XMLHttpRequests might be better
-		reapAll();
+	if (!navigator.onLine || connection_error == 1) {
+		reapeableAll();
 		//console.log("detected offline");
 	} else {
 		fetchData();
@@ -256,9 +253,14 @@ function renew(){
 	}
 }
 
-function reapAll(){
+function reapeableAll(){
 	//console.log("reapping");
 	for (var reap in Planes) {
+		//if not yet removed from the map, do it now!
+				if (Planes[reap].marker) {
+					Planes[reap].remove_plane();
+				}
+		//mark as reapable
 		Planes[reap].reapable = true;
 	}
 }
@@ -275,7 +277,7 @@ function onchange (evt) {
 		clearInterval(varTimerInterval);
 		varTimerInterval = 0 ;
 	} else if (type in show_events) {
-		 reapAll();
+		 reapeableAll();
 		//reset timer
 		if (!varTimerInterval)
 		varTimerInterval = window.setInterval(renew, 1000);
@@ -285,7 +287,7 @@ function onchange (evt) {
 			clearInterval(varTimerInterval);
 			varTimerInterval = 0 ;
 		} else {
-			reapAll();
+			reapeableAll();
 			//reset timer
 			if (!varTimerInterval)
 			varTimerInterval = window.setInterval(renew, 1000);
@@ -307,6 +309,10 @@ function reaper() {
 			// This way we still have it if it returns before then
 			// Due to loss of signal or other reasons
 			if ((reaptime - Planes[reap].updated) > 300000) {
+				//if not yet removed from the map, do it now!
+				if (Planes[reap].marker) {
+					Planes[reap].remove_plane();
+				}
 				// Reap it.
 				delete Planes[reap];
 			}

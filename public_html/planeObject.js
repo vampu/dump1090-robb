@@ -129,6 +129,25 @@ var planeObject = {
 			selectPlaneByHex(this.icao);
 		},
 
+	//remove plane from the map	
+	remove_plane: function() {
+
+			if (this.marker) {
+					this.marker.setMap(null);
+					this.marker = null;
+				}
+				if (this.line) {
+					this.line.setMap(null);
+					this.line = null;
+				}
+				if (SelectedPlane == this.icao) {
+					if (this.is_selected) {
+						this.is_selected = false;
+					}
+					SelectedPlane = null;
+				}
+		},
+
 	// Update our data
 	funcUpdateData	: function(data){
 			// So we can find out if we moved
@@ -153,20 +172,7 @@ var planeObject = {
 			// This way we can hold it, but not show it just in case the plane comes back
 			if (this.seen > 58) {
 				this.reapable = true;
-				if (this.marker) {
-					this.marker.setMap(null);
-					this.marker = null;
-				}
-				if (this.line) {
-					this.line.setMap(null);
-					this.line = null;
-				}
-				if (SelectedPlane == this.icao) {
-					if (this.is_selected) {
-						this.is_selected = false;
-					}
-					SelectedPlane = null;
-				}
+				remove_plane();
 			} else {
 				if (this.reapable == true) {
 				}
