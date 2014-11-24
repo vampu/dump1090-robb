@@ -182,7 +182,6 @@ var planeObject = {
 			this.messages	= data.messages;
 			this.seen	= data.seen;
 
-this.check_plane();
 			// Is the position valid?
 			if ((data.validposition == 1) && (this.reapable == false)) {
 				this.vPosition = true;
