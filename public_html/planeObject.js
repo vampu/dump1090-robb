@@ -255,6 +255,9 @@ var planeObject = {
 					path: this.trackline
 				});
 			}
+			if (GoogleMap.getMapTypeId() == "dark_map")  {
+				this.line.setOptions({strokeColor: '#009900'});
+			}	
 			return this.line;
 		}
 };
