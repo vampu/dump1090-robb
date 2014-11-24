@@ -27,10 +27,6 @@ function fetchData() {
 		PlanesOnMap = 0
 		SpecialSquawk = false;
 
-		//check on all planes
-		for (var plane in Planes) {
-			plane.check_plane();
-		}
 		// Loop through all the planes in the data packet
 		for (var j=0; j < data.length; j++) {
 			// Do we already have this plane object in Planes?
