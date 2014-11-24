@@ -27,6 +27,11 @@ function fetchData() {
 		PlanesOnMap = 0
 		SpecialSquawk = false;
 
+		//check on all planes
+		for (var plane in Planes) {
+			Planes[plane].check_plane();
+		}
+
 		// Loop through all the planes in the data packet
 		for (var j=0; j < data.length; j++) {
 			// Do we already have this plane object in Planes?
@@ -52,10 +57,6 @@ function fetchData() {
 			
 			// Copy the plane into Planes
 			Planes[plane.icao] = plane;
-		}
-		//check on all planes
-		for (var plane in Planes) {
-			Planes[plane].check_plane();
 		}
 
 		PlanesOnTable = data.length;

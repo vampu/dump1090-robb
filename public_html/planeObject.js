@@ -157,8 +157,8 @@ var planeObject = {
 				//console.log("Removing plane");
 		} else {
 				if (this.reapable == true) {
+					this.reapable = false;
 				}
-				this.reapable = false;
 			}
 		},
 
@@ -181,6 +181,8 @@ var planeObject = {
 			this.icao	= data.hex;
 			this.messages	= data.messages;
 			this.seen	= data.seen;
+			//check if this plane deserves a second chance
+			this.check_plane(); 
 
 			// Is the position valid?
 			if ((data.validposition == 1) && (this.reapable == false)) {
