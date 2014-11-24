@@ -253,9 +253,9 @@ function renew(){
 function reapeableAll(){
 	for (var reap in Planes) {
 		//if not yet removed from the map, do it now!
-				if (Planes[reap].marker) {
-					Planes[reap].remove_plane();
-				}
+		if (Planes[reap].marker) {
+			Planes[reap].remove_plane();
+		}
 		//mark as reapable
 		Planes[reap].reapable = true;
 	}
