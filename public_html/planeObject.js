@@ -129,6 +129,41 @@ var planeObject = {
 			selectPlaneByHex(this.icao);
 		},
 
+	//remove plane from the map
+	funcRemovePlane : function() {
+			if (this.marker) {
+					this.marker.setMap(null);
+					this.marker = null;
+				}
+			if (this.line) {
+				this.line.setMap(null);
+				this.line = null;
+				}
+			if (SelectedPlane == this.icao) {
+				if (this.is_selected) {
+					this.is_selected = false;
+				}
+				SelectedPlane = null;
+			}
+	},
+
+	funcCheckPlane : function() {
+		// If no packet in over 58 seconds, consider the plane reapable
+		// This way we can hold it, but not show it just in case the plane comes back
+		//console.log("Checking plane");
+		if (this.seen > 58) {
+			if (this.reapable == false){ // check only for planes not hiden already
+				this.reapable = true;
+				this.funcRemovePlane();
+				//console.log("Removing plane");
+			}
+		} else {
+			if (this.reapable == true) {
+				this.reapable = false;
+			}
+		}
+	},
+
 	// Update our data
 	funcUpdateData	: function(data){
 			// So we can find out if we moved
@@ -148,30 +183,6 @@ var planeObject = {
 			this.icao	= data.hex;
 			this.messages	= data.messages;
 			this.seen	= data.seen;
-
-			// If no packet in over 58 seconds, consider the plane reapable
-			// This way we can hold it, but not show it just in case the plane comes back
-			if (this.seen > 58) {
-				this.reapable = true;
-				if (this.marker) {
-					this.marker.setMap(null);
-					this.marker = null;
-				}
-				if (this.line) {
-					this.line.setMap(null);
-					this.line = null;
-				}
-				if (SelectedPlane == this.icao) {
-					if (this.is_selected) {
-						this.is_selected = false;
-					}
-					SelectedPlane = null;
-				}
-			} else {
-				if (this.reapable == true) {
-				}
-				this.reapable = false;
-			}
 
 			// Is the position valid?
 			if ((data.validposition == 1) && (this.reapable == false)) {
